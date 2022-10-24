@@ -19,7 +19,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "build": "rd /s /q dist && mkdir dist &&  babel src/ -d dist --copy-files"
+    "build": "rm -rf dist && mkdir dist &&  babel src/ -d dist --copy-files",
+    "build:win": "rd /s /q dist && mkdir dist &&  babel src/ -d dist --copy-files"
   },
   "eslintConfig": {
     "extends": [
