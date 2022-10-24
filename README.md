@@ -78,7 +78,7 @@ export default App;
 `
 
 - Custom start/end time for a specific date:<br>
-**Example: On 31/10/2022 start at 10.00 and end at 16.00**<br>
+**Example: On 31/10/2022 start at 12.00 and end at 20.00**<br>
 *Note that the month starts from 0*
 
 `
