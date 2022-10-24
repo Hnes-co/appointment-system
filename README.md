@@ -40,7 +40,7 @@ function App() {
     ]
   };
 
-  const url = "http://your-server-url/api/appointments";
+  const url = "your-server-url";
 
   return (
     <div>
