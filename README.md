@@ -55,7 +55,7 @@ export default App;
 ## Props
 
 |             Name             |  Type  | Required |                                                             Description                                                            |
-|:----------------------------:|:------:|:--------:|:----------------------------------------------------------------------------------------------------------------------------------:|
+|:-----------------------------|:------:|:--------:|:-----------------------------------------------------------------------------------------------------------------------------------|
 | `url`                        | string | `false`  | The url to your backend server, where the appointments will be saved.<br>If not provided, appointments will be saved only locally. |
 | `parameters`                 | object | `true`   | Parameters for the appointment calendar. Properties listed below.                                                                  |
 | `parameters.durationOptions` | array  | `true`   | Appointment durations that are offered.<br>Duration in minutes, separate durations with comma.                                     |

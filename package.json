@@ -4,6 +4,8 @@
   "main": "dist/AppointmentSystem.js",
   "author": "Hannes Pohjola",
   "private": false,
+  "license": "MIT",
+  "repository": "Hnes-co/appointment-system",
   "babel": {
     "presets": [
       "@babel/preset-react"
