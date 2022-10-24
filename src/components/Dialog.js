@@ -11,13 +11,12 @@ function Dialog(props) {
   };
 
   function handleInputChange({target}) {
-    props.setDetails({
-      ...props.details,
-      [target.name]: target.value
-    });
+    props.setDetails(prevState => {
+      return {...prevState, [target.name]: target.value}
+    })
   }
 
-  if(props.dialogMode === "modify") {
+  if(props.dialogMode === "examine") {
     return (
       <dialog open={props.dialogOpen} className="dialog dialog-admin">
         <div className="dialog-header">Manage appointment</div>

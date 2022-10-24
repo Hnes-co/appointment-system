@@ -1,10 +1,10 @@
 
 import './App.css';
-import {useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import UserInterface from './components/UserInterface';
 import adminCredentials from './assets/adminCredentials.json'
 
-function AppointmentSystem({parameters, backEndUrl}) {
+function AppointmentSystem({parameters, url}) {
 
   const d = new Date();
   const [appointmentCalendar, setAppointmentCalendar] = useState([]);
@@ -26,33 +26,39 @@ function AppointmentSystem({parameters, backEndUrl}) {
     async function getAppointments() {
       let temp = [];
       let presentTime = new Date().getTime();
-      await fetch(backEndUrl.appointments)
-      .then(response => response.json())
-      .then(resJson => {
-        if(!resJson.error) {
-          resJson.forEach(async (e) => { 
-            e.time = new Date(e.time);
-            if(e.time.getTime() > presentTime) {
-              temp.push(e);
-            }
-            else {
-              await fetch(backEndUrl.appointments+"/"+e._id, {
-                method: 'DELETE',
-                headers: {
-                  'Content-type': 'application/json'
-                }
-              });
-            }
-          });
-          setAppointments(temp.sort((a,b) => {return a.time.getTime() - b.time.getTime()}));
-        }
-        else {
-          window.alert("Failed to fetch appointments from server." +  resJson.error );
-        }
-      });
+      try {
+        await fetch(url)
+        .then(response => response.json())
+        .then(resJson => {
+          if(!resJson.error) {
+            resJson.forEach(async (e) => { 
+              e.time = new Date(e.time);
+              if(e.time.getTime() > presentTime) {
+                temp.push(e);
+              }
+              else {
+                await fetch(url+"/"+e._id, {
+                  method: 'DELETE',
+                  headers: {
+                    'Content-type': 'application/json'
+                  }
+                });
+              }
+            });
+            setAppointments(temp.sort((a,b) => {return a.time.getTime() - b.time.getTime()}));
+          }
+          else {
+            window.alert("Failed to fetch appointments from server." +  resJson.error );
+          }
+        });
+      } 
+      catch (error) {
+        window.alert("Failed to fetch appointments from server.\n" + error);
+      }
     }
-    getAppointments();
-  },[backEndUrl]);
+    if(url) getAppointments();
+  },[url])
+
 
   useEffect(() => {
     let tempWeeks = [];
@@ -108,42 +114,68 @@ function AppointmentSystem({parameters, backEndUrl}) {
   },[parameters, duration, appointments, weekStart, weekEnd, calendarMode]);
 
   async function createAppointment(data) {
-    await fetch(backEndUrl.appointments, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data)
-    })
-    .then(res => res.json())
-    .then(resJson => {
-      if(!resJson.error) {
-        resJson.time = new Date(resJson.time)
-        setAppointments(appointments.concat([resJson]));
-        window.alert("Appointment confirmed.\n\n Confirmation email sent.");
+    if(url) {
+      try {
+        await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(resJson => {
+          if(!resJson.error) {
+            resJson.time = new Date(resJson.time)
+            setAppointments(appointments.concat([resJson]));
+            window.alert("Appointment confirmed.\n\n Confirmation email sent.");
+          }
+          else {
+            window.alert("Failed to save appointment.\n\n" + resJson.error);
+          }
+        });
       }
-      else {
-        window.alert("Failed to save appointment.\n\n" + resJson.error);
+      catch(error) {
+        window.alert("Failed to save appointment.\n\n" + error);
       }
-    });
+    }
+    else {
+      setAppointments(appointments.concat([data]));
+    }
   }
 
   async function deleteAppointment(id) {
-    await fetch(backEndUrl.appointments+"/"+id, {
-      method: 'DELETE',
-      headers: {
-        'Content-type': 'application/json'
+    if(url) {
+      try {
+        await fetch(url+"/"+id, {
+          method: 'DELETE',
+          headers: {
+            'Content-type': 'application/json'
+          }
+        })
+        .then(response => {
+          if(response && response.ok) {
+            setAppointments(prevState => prevState.filter(e => e._id !== selection._id));
+            window.alert("Appointment deleted.");
+          }
+          else {
+            window.alert("Failed to delete appointment.\n\n");
+          }
+        });
       }
-    })
-    .then(response => {
-      return response.ok;
-    });
+      catch (error) {
+        window.alert("Failed to delete appointment.\n\n" + error);
+      }
+    }
+    else {
+      setAppointments(prevState => prevState.filter(e => e._id !== selection._id));
+    }
   }
 
   function openDialog(date) {
     let match = appointments.find(e => e.time.getTime() === date.getTime());
     if(match) {
-      setDialogMode("modify");
+      setDialogMode("examine");
       setSelection(match);
     }
     else {
@@ -170,23 +202,17 @@ function AppointmentSystem({parameters, backEndUrl}) {
         details: details
       });
     }
-    else if(dialogMode === "modify") {
-      if(deleteAppointment(selection._id)) {
-        setAppointments(appointments.filter(e => e._id !== selection._id));
-        window.alert("Appointment deleted.");
-      }
-      else {
-        window.alert("Something went wrong.\n\nFailed to delete appointment.");
-      }
+    else if(dialogMode === "examine") {
+      deleteAppointment(selection._id);
     }
     closeDialog();
   }
 
   function updateWeek(step) {
     if(totalStep + step >= 0 && totalStep + step <= parameters.futureWeeks * 7) {
-      setWeekStart(new Date(weekStart.setDate(weekStart.getDate() + step)));
-      setWeekEnd(new Date(weekEnd.setDate(weekEnd.getDate() + step)));
-      setTotalStep(totalStep + step);
+      setWeekStart(prevState => new Date(prevState.setDate(prevState.getDate() + step)));
+      setWeekEnd(prevState => new Date(prevState.setDate(prevState.getDate() + step)))
+      setTotalStep(prevState => prevState + step);
     }
   }
 
