@@ -7,8 +7,8 @@ import adminCredentials from './assets/adminCredentials.json'
 function AppointmentSystem({parameters, url}) {
 
   const d = new Date();
-  const [weekStart, setWeekStart] = useState(new Date(new Date().setDate(d.getDate() - d.getDay() === 0 ? 7 : d.getDay() + 1)));
-  const [weekEnd, setWeekEnd] = useState(new Date(new Date().setDate(d.getDate() + 7 - d.getDay() === 0 ? 7 : d.getDay())));
+  const [weekStart, setWeekStart] = useState(new Date(new Date().setDate(d.getDate() - (d.getDay() === 0 ? 7 : d.getDay()) + 1)));
+  const [weekEnd, setWeekEnd] = useState(new Date(new Date().setDate(d.getDate() + 7 - (d.getDay() === 0 ? 7 : d.getDay()))));
   const [appointmentCalendar, setAppointmentCalendar] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [duration, setDuration] = useState();
