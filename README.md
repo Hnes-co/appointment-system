@@ -3,9 +3,11 @@
 ## About
 
 React component for a fully functional appointment system.
-- Includes a customizable appointment calendar,
-- Separate views for normal user to pick appointments and for administrator to view the appointments
-- Support for different appointment durations and available dates (see usage & props below)
+- Customizable appointment calendar that lists available times
+- Separate views for normal user to pick appointments and for administrator to view and manage the appointments
+- No user management, appointments are individualized based on unique appointment code
+- Users can use the appointment code to search their appointment and delete the appointment
+- Support for different appointment durations, available dates and times (see usage & props below)
 
 ## Install
 
