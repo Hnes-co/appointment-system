@@ -211,7 +211,7 @@
   border: none;
   background-color: rgb(50, 50, 50);
   color: whitesmoke;
-  width: calc(100% / 3)
+  width: calc(100% / 4)
 }
 
 .calendar-title {

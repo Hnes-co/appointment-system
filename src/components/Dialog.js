@@ -54,17 +54,17 @@ function Dialog(props) {
           <form onSubmit={props.updateAppointments}>
             <div className="dialogContent-middle">
                 <div>Name:
-                  <input name="name" value={props.details.name} required maxLength={30} onChange={handleInputChange}/>
+                  <input name="name" type="text" value={props.details.name} required maxLength={30} onChange={handleInputChange}/>
                 </div>
                 <div>Email:
-                  <input name="email" value={props.details.email} required maxLength={50} onChange={handleInputChange}/>
+                  <input name="email" type="email" value={props.details.email} required maxLength={50} onChange={handleInputChange}/>
                 </div>
                 <div>Additional info:
-                  <textarea name="notes" value={props.details.notes} maxLength={100} onChange={handleInputChange}/>
+                  <textarea name="notes" type="text" value={props.details.notes} maxLength={100} onChange={handleInputChange}/>
                 </div>
               </div>
             <div className="dialogContent-bottom">
-              <button className="calendar-button dialog-button" type="submit">Confirm Appointment</button>
+              <button className="calendar-button dialog-button" type="submit">Confirm</button>
               <button className="calendar-button dialog-button" type="reset" onClick={props.closeDialog}>Cancel</button>
             </div>
           </form>

@@ -58,7 +58,7 @@ export default App;
 |:-----------------------------|:------:|:--------:|:-----------------------------------------------------------------------------------------------------------------------------------|
 | `url`                        | string | `false`  | The url to your backend server, where the appointments will be saved.<br>If not provided, appointments will be saved only locally. |
 | `parameters`                 | object | `true`   | Parameters for the appointment calendar. Properties listed below.                                                                  |
-| `parameters.durationOptions` | array  | `true`   | Appointment durations that are offered.<br>Duration in minutes, separate durations with comma.                                     |
+| `parameters.durationOptions` | array  | `true`   | Appointment durations that are offered.<br>Duration in minutes.                                                                    |
 | `parameters.startTime`       | number | `true`   | Time(hours, 0-23), when first appointment is offered                                                                               |
 | `parameters.endTime`         | number | `true`   | Time(hours, 1-24), when appointment offering stops                                                                                 |
 | `parameters.days`            | number | `true`   | How many days a week appointments are offered (1-7).<br>For example, if this is set at 5, appointments are offered mon-fri.        |

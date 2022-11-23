@@ -7,19 +7,19 @@ import adminCredentials from './assets/adminCredentials.json'
 function AppointmentSystem({parameters, url}) {
 
   const d = new Date();
+  const [weekStart, setWeekStart] = useState(new Date(new Date().setDate(d.getDate() - d.getDay() === 0 ? 7 : d.getDay() + 1)));
+  const [weekEnd, setWeekEnd] = useState(new Date(new Date().setDate(d.getDate() + 7 - d.getDay() === 0 ? 7 : d.getDay())));
   const [appointmentCalendar, setAppointmentCalendar] = useState([]);
   const [appointments, setAppointments] = useState([]);
-  const [weekStart, setWeekStart] = useState(new Date(d.getFullYear(), d.getMonth(), d.getDate() - (d.getDay() === 0 ? 7 : d.getDay()) + 1));
-  const [weekEnd, setWeekEnd] = useState(new Date(d.getFullYear(), d.getMonth(), d.getDate() + (7 - (d.getDay() === 0 ? 7 : d.getDay()))));
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [duration, setDuration] = useState();
+  const [calendarMode, setCalendarMode] = useState("normal"); 
   const [selection, setSelection] = useState("");
+  const [dialogMode, setDialogMode] = useState("add");
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [appointmentID, setAppointmentID] = useState(0);
   const [details, setDetails] = useState({name: "", email: "", notes: ""});
-  const [duration, setDuration] = useState();
   const [codeInput, setCodeInput] = useState("");
-  const [calendarMode, setCalendarMode] = useState("normal"); 
   const [message, setMessage] = useState("");
-  const [dialogMode, setDialogMode] = useState("add");
   const [totalStep, setTotalStep] = useState(0);
 
   useEffect(() => {
@@ -57,11 +57,10 @@ function AppointmentSystem({parameters, url}) {
       }
     }
     if(url) getAppointments();
-  },[url])
-
+  },[url]);
 
   useEffect(() => {
-    let tempWeeks = [];
+    let tempCalendar = [];
     let durationInMs = duration * 60000;
     let presentTime = new Date().getTime();
     if(calendarMode === "admin") {
@@ -73,7 +72,7 @@ function AppointmentSystem({parameters, url}) {
             times.push({title: e.time, status: "available"});
           }
         }
-        tempWeeks.push({title: title, times: times});
+        tempCalendar.push({title: title, times: times});
       }
     }
     else {
@@ -107,10 +106,10 @@ function AppointmentSystem({parameters, url}) {
           }
           times.push(obj);
         }
-        tempWeeks.push({title: title, times: times});
+        tempCalendar.push({title: title, times: times});
       }
     }
-    setAppointmentCalendar(tempWeeks);
+    setAppointmentCalendar(tempCalendar);
   },[parameters, duration, appointments, weekStart, weekEnd, calendarMode]);
 
   async function createAppointment(data) {
@@ -209,9 +208,9 @@ function AppointmentSystem({parameters, url}) {
   }
 
   function updateWeek(step) {
-    if(totalStep + step >= 0 && totalStep + step <= parameters.futureWeeks * 7) {
-      setWeekStart(prevState => new Date(prevState.setDate(prevState.getDate() + step)));
-      setWeekEnd(prevState => new Date(prevState.setDate(prevState.getDate() + step)))
+    if(totalStep + step >= 0 && totalStep + step <= parameters.futureWeeks) {
+      setWeekStart(prevState => new Date(prevState.setDate(prevState.getDate() + step * 7)));
+      setWeekEnd(prevState => new Date(prevState.setDate(prevState.getDate() + step * 7)));
       setTotalStep(prevState => prevState + step);
     }
   }
@@ -238,28 +237,28 @@ function AppointmentSystem({parameters, url}) {
 
   return (
     <UserInterface 
+      appointmentCalendar={appointmentCalendar}
+      weekStart={weekStart}
+      weekEnd={weekEnd}
       calendarMode={calendarMode}
       setCalendarMode={setCalendarMode}
-      dialogOpen={dialogOpen}
+      updateWeek={updateWeek}
+      parameters={parameters}
+      duration={duration}
+      setDuration={setDuration}
       selection={selection}
-      appointmentID={appointmentID}
-      updateAppointments={updateAppointments}
-      details={details}
-      setDetails={setDetails}
+      dialogOpen={dialogOpen}
+      openDialog={openDialog}
       closeDialog={closeDialog}
       dialogMode={dialogMode}
+      details={details}
+      setDetails={setDetails}
+      appointmentID={appointmentID}
+      updateAppointments={updateAppointments}
       codeInput={codeInput}
       setCodeInput={setCodeInput}
       handleAppointmentSearch={handleAppointmentSearch}
       message={message}
-      appointmentCalendar={appointmentCalendar}
-      weekStart={weekStart}
-      weekEnd={weekEnd}
-      updateWeek={updateWeek}
-      openDialog={openDialog}
-      parameters={parameters}
-      duration={duration}
-      setDuration={setDuration}
     />
   );
 }

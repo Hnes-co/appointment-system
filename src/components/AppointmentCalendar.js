@@ -1,5 +1,5 @@
 import React from "react";
-import AppointmentTimes from "./AppointmentTimes";
+import Appointment from "./Appointment";
 import arrowLeftIcon from '../assets/arrow_left.svg';
 import arrowRightIcon from '../assets/arrow_right.svg';
 
@@ -11,12 +11,12 @@ function AppointmentCalendar(props) {
     return (
       <div className="calendar">
         <div className="calendar-title">
-        <div className="calendar-button week-button-left" onClick={() => props.updateWeek(-7)}>
+        <div className="calendar-button week-button-left" onClick={() => props.updateWeek(-1)}>
           <img src={arrowLeftIcon} alt="arrow"/>
           <span>Previous week</span>
         </div>
         <div className="week-header">{props.weekStart.toLocaleDateString() + " - " + props.weekEnd.toLocaleDateString()}</div>
-        <div className="calendar-button week-button-right" onClick={() => props.updateWeek(7)}>
+        <div className="calendar-button week-button-right" onClick={() => props.updateWeek(1)}>
           <span>Next week</span>
           <img src={arrowRightIcon} alt="arrow"/>
         </div>
@@ -25,7 +25,7 @@ function AppointmentCalendar(props) {
           {props.appointmentCalendar.map(day => (
             <div key={day.title.getTime()} className="grid-item">
               <div className="grid-header">{dayFormat.format(day.title)}</div>
-              <AppointmentTimes 
+              <Appointment 
                 times={day.times}
                 openDialog={props.openDialog}
               />
