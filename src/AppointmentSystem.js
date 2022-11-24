@@ -4,11 +4,11 @@ import React, {useState, useEffect} from 'react';
 import UserInterface from './components/UserInterface';
 import adminCredentials from './assets/adminCredentials.json'
 
-function AppointmentSystem({parameters, url}) {
+function AppointmentSystem({parameters, url, code}) {
 
   const d = new Date();
-  const [weekStart, setWeekStart] = useState(new Date(new Date().setDate(d.getDate() - (d.getDay() === 0 ? 7 : d.getDay()) + 1)));
-  const [weekEnd, setWeekEnd] = useState(new Date(new Date().setDate(d.getDate() + 7 - (d.getDay() === 0 ? 7 : d.getDay()))));
+  const [weekStart, setWeekStart] = useState(new Date(d.getFullYear(), d.getMonth(), d.getDate() - (d.getDay() === 7 ? 0 : d.getDay()) + 1));
+  const [weekEnd, setWeekEnd] = useState(new Date(d.getFullYear(), d.getMonth(), d.getDate() + 7 - (d.getDay() === 7 ? 0 : d.getDay())));
   const [appointmentCalendar, setAppointmentCalendar] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [duration, setDuration] = useState();
@@ -221,7 +221,7 @@ function AppointmentSystem({parameters, url}) {
     if(match) {
       openDialog(match.time);
     }
-    else if(Number(codeInput) === adminCredentials.code) {
+    else if(Number(codeInput) === adminCredentials.code || codeInput === code) {
       if(calendarMode !== "admin") {
         setCalendarMode("admin");
       }

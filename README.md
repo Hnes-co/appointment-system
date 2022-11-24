@@ -2,7 +2,7 @@
 
 ## About
 
-React component for a fully functional appointment system.
+React component for a functional appointment system.
 - Customizable appointment calendar that lists available times
 - Separate views for normal user to pick appointments and for administrator to view and manage the appointments
 - No user management, appointments are individualized based on unique appointment code
@@ -26,7 +26,7 @@ function App() {
     durationOptions: [15, 30, 45, 60, 90],
     startTime: 8,
     endTime: 16,
-    days: 5,
+    days: 7,
     futureWeeks: 2,
     exceptions: [
       {
@@ -44,9 +44,11 @@ function App() {
 
   const url = "your-server-url";
 
+  const code = "your-custom-code1234";
+
   return (
     <div>
-        <AppointmentSystem parameters={parameters} url={url}/>
+        <AppointmentSystem parameters={parameters} url={url} code={code}/>
     </div>
   );
 }
@@ -59,6 +61,7 @@ export default App;
 |             Name             |  Type  | Required |                                                             Description                                                            |
 |:-----------------------------|:------:|:--------:|:-----------------------------------------------------------------------------------------------------------------------------------|
 | `url`                        | string | `false`  | The url to your backend server, where the appointments will be saved.<br>If not provided, appointments will be saved only locally. |
+| `code`                       | string | `false`  | The code that opens the administrator view. Typed in the search bar.<br>If you do not provide one, the default code is 1234567890. |
 | `parameters`                 | object | `true`   | Parameters for the appointment calendar. Properties listed below.                                                                  |
 | `parameters.durationOptions` | array  | `true`   | Appointment durations that are offered.<br>Duration in minutes.                                                                    |
 | `parameters.startTime`       | number | `true`   | Time(hours, 0-23), when first appointment is offered                                                                               |
@@ -90,6 +93,16 @@ export default App;
   end: 20
 }
 `
+
+## About the url and server connection 
+
+It was designed for testing purposes to work with a Node.js server that uses MongoDB. 
+The component uses Fetch API and has 3 functions, getAppointments, createAppointment and deleteAppointment.
+If you provide the url and use it, it probably will not work with your setup. 
+Perhaps this is further developed in the future or perhaps it's not.
+Obviously you can clone the git repo and modify the functions to work for you.
+If you want to see the server used for testing, you can find it here: [appointment-system-test-server](https://github.com/Hnes-co/appointment-system-test-server)
+Feel free to use it.
 
 ## License
 
