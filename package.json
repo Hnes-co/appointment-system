@@ -1,6 +1,6 @@
 {
   "name": "react-appointment-system",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "dist/AppointmentSystem.js",
   "author": "Hannes Pohjola",
   "private": false,
