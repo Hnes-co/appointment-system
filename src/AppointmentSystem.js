@@ -27,32 +27,28 @@ function AppointmentSystem({parameters, url, code}) {
       let temp = [];
       let presentTime = new Date().getTime();
       try {
-        await fetch(url)
-        .then(response => response.json())
-        .then(resJson => {
-          if(!resJson.error) {
-            resJson.forEach(async (e) => { 
-              e.time = new Date(e.time);
-              if(e.time.getTime() > presentTime) {
-                temp.push(e);
-              }
-              else {
-                await fetch(url+"/"+e._id, {
-                  method: 'DELETE',
-                  headers: {
-                    'Content-type': 'application/json'
-                  }
-                });
-              }
-            });
-            setAppointments(temp.sort((a,b) => {return a.time.getTime() - b.time.getTime()}));
-          }
-          else {
-            window.alert("Failed to fetch appointments from server." +  resJson.error );
-          }
-        });
-      } 
-      catch (error) {
+        const response = await (await fetch(url)).json();
+        if(response && !response.error) {
+          response.forEach(async (e) => { 
+            e.time = new Date(e.time);
+            if(e.time.getTime() > presentTime) {
+              temp.push(e);
+            }
+            else {
+              await fetch(url+"/"+e._id, {
+                method: 'DELETE',
+                headers: {
+                  'Content-type': 'application/json'
+                }
+              });
+            }
+          });
+          setAppointments(temp.sort((a,b) => {return a.time.getTime() - b.time.getTime()}));
+        }
+        else {
+          window.alert("Failed to fetch appointments from server." +  response?.error );
+        }
+      } catch (error) {
         window.alert("Failed to fetch appointments from server.\n" + error);
       }
     }
@@ -115,24 +111,21 @@ function AppointmentSystem({parameters, url, code}) {
   async function createAppointment(data) {
     if(url) {
       try {
-        await fetch(url, {
+        const response = await (await fetch(url, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(data)
-        })
-        .then(res => res.json())
-        .then(resJson => {
-          if(!resJson.error) {
-            resJson.time = new Date(resJson.time)
-            setAppointments(appointments.concat([resJson]));
-            window.alert("Appointment confirmed.\n\n Confirmation email sent.");
-          }
-          else {
-            window.alert("Failed to save appointment.\n\n" + resJson.error);
-          }
-        });
+        })).json();
+        if(response && !response.error) {
+          response.time = new Date(response.time)
+          setAppointments(appointments.concat([response]));
+          window.alert("Appointment confirmed.");
+        }
+        else {
+          window.alert("Failed to save appointment.\n\n" + response.error);
+        }
       }
       catch(error) {
         window.alert("Failed to save appointment.\n\n" + error);
@@ -146,21 +139,19 @@ function AppointmentSystem({parameters, url, code}) {
   async function deleteAppointment(id) {
     if(url) {
       try {
-        await fetch(url+"/"+id, {
+        const response = await fetch(url+"/"+id, {
           method: 'DELETE',
           headers: {
             'Content-type': 'application/json'
           }
-        })
-        .then(response => {
-          if(response && response.ok) {
-            setAppointments(prevState => prevState.filter(e => e._id !== selection._id));
-            window.alert("Appointment deleted.");
-          }
-          else {
-            window.alert("Failed to delete appointment.\n\n");
-          }
         });
+        if(response && response.ok) {
+          setAppointments(prevState => prevState.filter(e => e._id !== selection._id));
+          window.alert("Appointment deleted.");
+        }
+        else {
+          window.alert("Failed to delete appointment.\n\n");
+        }
       }
       catch (error) {
         window.alert("Failed to delete appointment.\n\n" + error);
@@ -202,7 +193,9 @@ function AppointmentSystem({parameters, url, code}) {
       });
     }
     else if(dialogMode === "examine") {
-      deleteAppointment(selection._id);
+      if(window.confirm("Are you sure you want to delete this appointment?")) {
+        deleteAppointment(selection._id);
+      }
     }
     closeDialog();
   }
@@ -221,7 +214,7 @@ function AppointmentSystem({parameters, url, code}) {
     if(match) {
       openDialog(match.time);
     }
-    else if(Number(codeInput) === adminCredentials.code || codeInput === code) {
+    else if((Number(codeInput) === adminCredentials.code && !code) || (code && codeInput === code)) {
       if(calendarMode !== "admin") {
         setCalendarMode("admin");
       }
