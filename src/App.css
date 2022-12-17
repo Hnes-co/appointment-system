@@ -1,21 +1,20 @@
-#root {
+.main-container {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-  sans-serif;
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-.main-container {
   border-radius: 10px;
   box-shadow: 0 0 25px 2px;
-  margin: 2rem;
   background: whitesmoke;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-width: 1300px;
 }
 
-.top-menu, .grid-header {
+.top-menu,
+.grid-header {
   background-color: rgb(50, 50, 50);
   box-shadow: 0 0 2px 2px rgb(35, 35, 35) inset;
   color: whitesmoke;
@@ -40,7 +39,9 @@
   box-shadow: 0 2px 0 0 rgb(35, 35, 35);
 }
 
-.admin-header-title, .calendar-button span, .search-bar label {
+.admin-header-title,
+.calendar-button span,
+.search-bar label {
   margin: 0.25rem;
 }
 
@@ -51,9 +52,14 @@
   padding: 0.5rem;
 }
 
+.search-bar div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .top-menu-input {
   margin: 0.25rem;
-  box-shadow: 0 0 2px 2px rgb(35, 35, 35);
 }
 
 .top-menu-admin-button img {
@@ -65,6 +71,8 @@
   display: flex;
   margin-left: 0.25rem;
   margin-right: 0.25rem;
+  background-color: rgb(50, 50, 50);
+  border: none;
 }
 
 .top-menu-button img {
@@ -98,7 +106,8 @@
   padding: 0.5rem 0 0.5rem 0.5rem;
 }
 
-.week-button-left img, .week-button-right img {
+.week-button-left img,
+.week-button-right img {
   width: 30px;
   height: 30px;
 }
@@ -140,31 +149,23 @@
   pointer-events: all;
   border: none;
   border-radius: 5px;
-  box-shadow: 0 0 15px 2px;
-  padding: 0;
+  box-shadow: 0 0 10px 2px;
   margin-top: 5rem;
   position: fixed;
   font-size: 14pt;
+  width: 80vw;
+  max-width: 500px;
 }
 
 .dialog-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 12pt;
-  background-color: rgb(50, 50, 50);
-  box-shadow: 0 0 2px 2px rgb(35, 35, 35) inset;
-  padding: 0.5rem;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  color: whitesmoke;
+  margin: 0;
+  padding-bottom: 1rem;
 }
 
 .dialogContent {
-  padding: 1rem;
   display: flex;
   flex-direction: column;
-  width: 25vw;
+  width: 100%;
 }
 
 .dialogContent-top {
@@ -187,11 +188,15 @@
   padding-bottom: 0.25rem;
 }
 
-.dialogContent-middle input, .dialogContent-middle textarea {
+.dialogContent-middle input,
+.dialogContent-middle textarea {
   width: 50%;
   font-size: 12pt;
   resize: none;
-  box-shadow: 0 0 1px 1px rgb(45, 45, 45);
+}
+
+.dialogContent-middle textarea {
+  height: 5rem;
 }
 
 .dialogContent-middle label {
@@ -207,15 +212,13 @@
   margin-top: 1rem;
 }
 
-.dialog-button { 
+.dialog-button {
   justify-content: center;
   align-items: center;
   padding: 0.5rem;
   margin: 0.5rem;
-  border: none;
-  background-color: rgb(50, 50, 50);
-  color: whitesmoke;
-  width: calc(100% / 4)
+  border: 1px solid rgb(50, 50, 50);
+  width: 25%;
 }
 
 .calendar-title {
@@ -223,6 +226,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.75rem;
+  border-bottom: 1px solid rgb(50, 50, 50);
 }
 
 .week-header {
@@ -232,6 +236,9 @@
 .calendar-grid {
   display: grid;
   grid-template-columns: auto auto auto auto auto auto auto;
+  overflow-x: auto;
+  max-height: min(60vh, 600px);
+  overflow-y: auto;
 }
 
 .grid-header {
@@ -244,10 +251,6 @@
   text-align: center;
 }
 
-.main-container-disabled {
-  pointer-events: none;
-}
-
 .time-item-unavailable {
   opacity: 30%;
 }
@@ -257,89 +260,36 @@
   box-shadow: 0 2px 0 0 rgb(45, 45, 45);
 }
 
-@media only screen and (max-width: 1500px) {
-  .dialogContent {
-    width: 35vw;
-  }
+/* ---- MOBILE LAYOUT ---- */
 
-  .grid-header {
-    padding: 0.75rem;
-  }
+.dialogContent-middle-mobile input,
+.dialogContent-middle-mobile textarea {
+  font-size: 10pt;
+  width: 65%;
 }
 
-@media only screen and (max-width: 1000px) {
-  .dialogContent {
-    width: 50vw;
-    font-size: 12pt;
-  }
+.week-header-mobile {
+  font-size: 14pt;
 }
 
-@media only screen and (max-width: 880px) {
-  .main-container {
-    margin: 0;
-    width: 99vw;
-  }
-
-  .grid-header {
-    padding: 0.5rem;
-  }
-
-  .week-header{
-    font-size: 18pt;
-  }
-
-  .week-button-left span, .week-button-right span {
-    display: none;
-  }
-
-  .week-button-left, .week-button-right {
-    padding: 0;
-  }
+.week-button-right-mobile span,
+.week-button-left-mobile span {
+  display: none;
 }
 
-@media only screen and (max-width: 600px) {
-
-  .calendar-grid {
-    grid-template-columns: auto;
-  }
-
-  .dialogContent {
-    width: 70vw;
-  }
-
-  .dialogContent-middle input, .dialogContent-middle textarea, .dialog-button {
-    font-size: 10pt;
-  }
-
-  .week-header{
-    font-size: 14pt;
-  }
-
-  .week-button-right img, .week-button-left img {
-    width: 24px;
-    height: 24px;
-  }
-
-  .search-bar {
-    justify-content: flex-start;
-  }
-
-  .search-bar, .admin-header-title {
-    font-size: 10pt;
-  }
+.week-button-right-mobile,
+.week-button-left-mobile {
+  padding: 0.5rem;
 }
 
-@media only screen and (max-width: 420px) {
-  .week-header{
-    font-size: 12pt;
-  }
+.search-bar-mobile {
+  flex-direction: column;
+}
 
-  .dialogContent {
-    width: 80vw;
-    font-size: 10pt;
-  }
+.dialogContent-mobile {
+  font-size: 12pt;
+}
 
-  .dialogContent-middle input, .dialogContent-middle textarea, .dialog-button {
-    font-size: 8pt;
-  }
+.dialog-button-mobile {
+  width: calc(100% / 2.5);
 }
