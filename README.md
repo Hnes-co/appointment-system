@@ -104,6 +104,20 @@ Obviously you can clone the git repo and modify the functions to work for you.
 If you want to see the server used for testing, you can find it here: [appointment-system-test-server](https://github.com/Hnes-co/appointment-system-test-server)
 Feel free to use it.
 
+- Appointment definiton:
+```jsx
+{
+  _id: String,
+  time: Date,
+  duration: String,
+  details: {
+    name: String,
+    email: String,
+    notes: String
+  }
+}
+```
+
 ## License
 
 MIT @ [Hnes-co](https://github.com/Hnes-co)

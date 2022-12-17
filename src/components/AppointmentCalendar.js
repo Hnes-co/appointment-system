@@ -5,27 +5,27 @@ import arrowRightIcon from '../assets/arrow_right.svg';
 
 function AppointmentCalendar(props) {
 
-  const dayFormat = new Intl.DateTimeFormat(navigator.languages[0], {weekday: 'long'});
+  const dayFormat = new Intl.DateTimeFormat(navigator.languages[0], { weekday: 'long' });
 
   if(props.duration || props.calendarMode === "admin") {
     return (
       <div className="calendar">
         <div className="calendar-title">
-        <div className="calendar-button week-button-left" onClick={() => props.updateWeek(-1)}>
-          <img src={arrowLeftIcon} alt="arrow"/>
-          <span>Previous week</span>
-        </div>
-        <div className="week-header">{props.weekStart.toLocaleDateString() + " - " + props.weekEnd.toLocaleDateString()}</div>
-        <div className="calendar-button week-button-right" onClick={() => props.updateWeek(1)}>
-          <span>Next week</span>
-          <img src={arrowRightIcon} alt="arrow"/>
-        </div>
+          <div className={props.handleResizeClass("calendar-button week-button-left")} onClick={() => props.updateWeek(-1)}>
+            <img src={arrowLeftIcon} alt="arrow" />
+            <span>Previous week</span>
+          </div>
+          <div className={props.handleResizeClass("week-header")}>{props.weekStart.toLocaleDateString() + " - " + props.weekEnd.toLocaleDateString()}</div>
+          <div className={props.handleResizeClass("calendar-button week-button-right")} onClick={() => props.updateWeek(1)}>
+            <span>Next week</span>
+            <img src={arrowRightIcon} alt="arrow" />
+          </div>
         </div>
         <div className="calendar-grid">
           {props.appointmentCalendar.map(day => (
             <div key={day.title.getTime()} className="grid-item">
               <div className="grid-header">{dayFormat.format(day.title)}</div>
-              <Appointment 
+              <Appointment
                 times={day.times}
                 openDialog={props.openDialog}
               />

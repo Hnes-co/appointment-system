@@ -1,10 +1,10 @@
 
 import './App.css';
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import UserInterface from './components/UserInterface';
-import adminCredentials from './assets/adminCredentials.json'
+import adminCredentials from './assets/adminCredentials.json';
 
-function AppointmentSystem({parameters, url, code}) {
+function AppointmentSystem({ parameters, url, code }) {
 
   const d = new Date();
   const [weekStart, setWeekStart] = useState(new Date(d.getFullYear(), d.getMonth(), d.getDate() - (d.getDay() === 7 ? 0 : d.getDay()) + 1));
@@ -12,13 +12,13 @@ function AppointmentSystem({parameters, url, code}) {
   const [appointmentCalendar, setAppointmentCalendar] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [duration, setDuration] = useState();
-  const [calendarMode, setCalendarMode] = useState("normal"); 
+  const [calendarMode, setCalendarMode] = useState("normal");
   const [selection, setSelection] = useState("");
   const [dialogMode, setDialogMode] = useState("add");
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [appointmentID, setAppointmentID] = useState(0);
-  const [details, setDetails] = useState({name: "", email: "", notes: ""});
-  const [codeInput, setCodeInput] = useState("");
+  const dialogOpen = useRef();
+  const appointmentID = useRef(0);
+  const details = useRef({ name: "", email: "", notes: "" });
+  const codeInput = useRef();
   const [message, setMessage] = useState("");
   const [totalStep, setTotalStep] = useState(0);
 
@@ -29,13 +29,13 @@ function AppointmentSystem({parameters, url, code}) {
       try {
         const response = await (await fetch(url)).json();
         if(response && !response.error) {
-          response.forEach(async (e) => { 
+          response.forEach(async (e) => {
             e.time = new Date(e.time);
             if(e.time.getTime() > presentTime) {
               temp.push(e);
             }
             else {
-              await fetch(url+"/"+e._id, {
+              await fetch(url + "/" + e._id, {
                 method: 'DELETE',
                 headers: {
                   'Content-type': 'application/json'
@@ -43,17 +43,17 @@ function AppointmentSystem({parameters, url, code}) {
               });
             }
           });
-          setAppointments(temp.sort((a,b) => {return a.time.getTime() - b.time.getTime()}));
+          setAppointments(temp.sort((a, b) => { return a.time.getTime() - b.time.getTime(); }));
         }
         else {
-          window.alert("Failed to fetch appointments from server." +  response?.error );
+          window.alert("Failed to fetch appointments from server." + response?.error);
         }
-      } catch (error) {
+      } catch(error) {
         window.alert("Failed to fetch appointments from server.\n" + error);
       }
     }
     if(url) getAppointments();
-  },[url]);
+  }, [url]);
 
   useEffect(() => {
     let tempCalendar = [];
@@ -65,10 +65,10 @@ function AppointmentSystem({parameters, url, code}) {
         let times = [];
         for(const e of appointments) {
           if(e.time.getDate() === title.getDate()) {
-            times.push({title: e.time, status: "available"});
+            times.push({ title: e.time, status: "available" });
           }
         }
-        tempCalendar.push({title: title, times: times});
+        tempCalendar.push({ title: title, times: times });
       }
     }
     else {
@@ -91,7 +91,7 @@ function AppointmentSystem({parameters, url, code}) {
           }
         }
         for(let j = start; j < end; j += durationInMs) {
-          let obj = {title: new Date(j), status: "available"};
+          let obj = { title: new Date(j), status: "available" };
           if(obj.title.getTime() <= presentTime + durationInMs || (obj.title.getDay() === 0 ? 7 : obj.title.getDay()) > parameters.days) {
             obj.status = "unavailable";
           }
@@ -102,11 +102,11 @@ function AppointmentSystem({parameters, url, code}) {
           }
           times.push(obj);
         }
-        tempCalendar.push({title: title, times: times});
+        tempCalendar.push({ title: title, times: times });
       }
     }
     setAppointmentCalendar(tempCalendar);
-  },[parameters, duration, appointments, weekStart, weekEnd, calendarMode]);
+  }, [parameters, duration, appointments, weekStart, weekEnd, calendarMode]);
 
   async function createAppointment(data) {
     if(url) {
@@ -119,7 +119,7 @@ function AppointmentSystem({parameters, url, code}) {
           body: JSON.stringify(data)
         })).json();
         if(response && !response.error) {
-          response.time = new Date(response.time)
+          response.time = new Date(response.time);
           setAppointments(appointments.concat([response]));
           window.alert("Appointment confirmed.");
         }
@@ -139,7 +139,7 @@ function AppointmentSystem({parameters, url, code}) {
   async function deleteAppointment(id) {
     if(url) {
       try {
-        const response = await fetch(url+"/"+id, {
+        const response = await fetch(url + "/" + id, {
           method: 'DELETE',
           headers: {
             'Content-type': 'application/json'
@@ -153,7 +153,7 @@ function AppointmentSystem({parameters, url, code}) {
           window.alert("Failed to delete appointment.\n\n");
         }
       }
-      catch (error) {
+      catch(error) {
         window.alert("Failed to delete appointment.\n\n" + error);
       }
     }
@@ -171,25 +171,25 @@ function AppointmentSystem({parameters, url, code}) {
     else {
       setDialogMode("add");
       setSelection(date);
-      setAppointmentID(new Date().getTime());
+      appointmentID.current = new Date().getTime();
     }
-    setDialogOpen(true);
+    dialogOpen.current.showModal();
   }
 
   function closeDialog() {
-    setDetails({name: "", email: "", notes: ""});
+    details.current = { name: "", email: "", notes: "" };
     setSelection("");
-    setDialogOpen(false);
+    dialogOpen.current.close();
   }
 
   function updateAppointments(event) {
     event.preventDefault();
     if(dialogMode === "add") {
       createAppointment({
-        _id: appointmentID,
+        _id: appointmentID.current,
         time: selection,
         duration: duration,
-        details: details
+        details: details.current
       });
     }
     else if(dialogMode === "examine") {
@@ -208,13 +208,16 @@ function AppointmentSystem({parameters, url, code}) {
     }
   }
 
-  function handleAppointmentSearch() {
+  function handleAppointmentSearch(event) {
+    event.preventDefault();
+    const value = codeInput.current.value;
+    if(value === "") return;
     setMessage("");
-    let match = appointments.find(e => e._id === codeInput);
+    let match = appointments.find(e => e._id === value);
     if(match) {
       openDialog(match.time);
     }
-    else if((Number(codeInput) === adminCredentials.code && !code) || (code && codeInput === code)) {
+    else if((Number(value) === adminCredentials.code && !code) || (code && value === code)) {
       if(calendarMode !== "admin") {
         setCalendarMode("admin");
       }
@@ -222,14 +225,14 @@ function AppointmentSystem({parameters, url, code}) {
         setMessage("Already in admin mode.");
       }
     }
-    else{
+    else {
       setMessage("Appointment not found.");
     }
-    setCodeInput("");
+    codeInput.current.value = "";
   }
 
   return (
-    <UserInterface 
+    <UserInterface
       appointmentCalendar={appointmentCalendar}
       weekStart={weekStart}
       weekEnd={weekEnd}
@@ -245,11 +248,9 @@ function AppointmentSystem({parameters, url, code}) {
       closeDialog={closeDialog}
       dialogMode={dialogMode}
       details={details}
-      setDetails={setDetails}
       appointmentID={appointmentID}
       updateAppointments={updateAppointments}
       codeInput={codeInput}
-      setCodeInput={setCodeInput}
       handleAppointmentSearch={handleAppointmentSearch}
       message={message}
     />
